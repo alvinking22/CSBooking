@@ -5,7 +5,6 @@ import { es } from 'date-fns/locale';
 import { bookingAPI } from '../services/api';
 import { useConfig } from '../contexts/ConfigContext';
 import toast from 'react-hot-toast';
-import { FiSearch, FiFilter, FiChevronRight, FiCheck, FiX, FiCalendar, FiRefreshCw } from 'react-icons/fi';
 
 const STATUS = {
   pending: { label: 'Pendiente', bg: 'bg-yellow-100', text: 'text-yellow-800' },
@@ -82,7 +81,7 @@ export default function BookingsList() {
           <p className="text-gray-500 text-sm">{total} reservas en total</p>
         </div>
         <button onClick={fetchBookings} className="p-2 rounded-lg hover:bg-gray-100 text-gray-600">
-          <FiRefreshCw size={18} />
+          Actualizar
         </button>
       </div>
 
@@ -90,9 +89,8 @@ export default function BookingsList() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
             <input type="text" value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-              placeholder="Buscar por email..." className="input-field pl-9" />
+              placeholder="Buscar por email..." className="input-field" />
           </div>
           <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
             className="input-field sm:w-44">
@@ -113,7 +111,6 @@ export default function BookingsList() {
           ? <div className="flex items-center justify-center h-48"><div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: pc }}></div></div>
           : bookings.length === 0
           ? <div className="p-12 text-center text-gray-400">
-              <FiCalendar size={40} className="mx-auto mb-3 opacity-50" />
               <p className="font-medium">No se encontraron reservas</p>
               <p className="text-sm mt-1">Intenta cambiar los filtros</p>
             </div>
@@ -160,18 +157,18 @@ export default function BookingsList() {
                               {b.status === 'pending' && (
                                 <button onClick={e => handleConfirm(e, b.id)}
                                   className="p-1.5 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 transition-colors" title="Confirmar">
-                                  <FiCheck size={14} />
+                                  ✓
                                 </button>
                               )}
                               {!['cancelled', 'completed'].includes(b.status) && (
                                 <button onClick={e => handleCancel(e, b.id)}
                                   className="p-1.5 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 transition-colors" title="Cancelar">
-                                  <FiX size={14} />
+                                  ✕
                                 </button>
                               )}
                               <Link to={`/admin/bookings/${b.id}`}
                                 className="p-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors" title="Ver detalle">
-                                <FiChevronRight size={14} />
+                                ›
                               </Link>
                             </div>
                           </td>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { equipmentAPI } from '../services/api';
 import { useConfig } from '../contexts/ConfigContext';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit, FiTrash2, FiImage, FiPackage, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
 
 const CATS = [
   { value: 'cameras', label: '📷 Cámaras' }, { value: 'microphones', label: '🎙️ Micrófonos' },
@@ -74,7 +73,7 @@ export default function EquipmentPage() {
         <div><h1 className="text-2xl font-bold text-gray-900">Equipos del Set</h1>
           <p className="text-gray-500 text-sm">{equipment.length} equipos configurados</p></div>
         <button onClick={() => { setShowForm(true); setEditing(null); setForm(EMPTY); }} className="btn-primary" style={{ background: pc }}>
-          <FiPlus size={18} /> Agregar Equipo
+          + Agregar Equipo
         </button>
       </div>
 
@@ -102,9 +101,8 @@ export default function EquipmentPage() {
             </div>
             <div className="flex items-center gap-4">
               <label className="label mb-0">¿Incluido gratis?</label>
-              <button type="button" onClick={() => setForm({ ...form, isIncluded: !form.isIncluded })} style={{ color: form.isIncluded ? '#10B981' : '#6B7280' }}>
-                {form.isIncluded ? <FiToggleRight size={28} /> : <FiToggleLeft size={28} />}
-              </button>
+              <input type="checkbox" checked={form.isIncluded} onChange={() => setForm({ ...form, isIncluded: !form.isIncluded })}
+                className="w-5 h-5 text-green-500 rounded" />
               <span className="text-sm text-gray-600">{form.isIncluded ? 'Incluido' : 'Costo extra'}</span>
             </div>
             {!form.isIncluded && (
@@ -135,15 +133,15 @@ export default function EquipmentPage() {
       {loading
         ? <div className="flex items-center justify-center h-48"><div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: pc }}></div></div>
         : filtered.length === 0
-        ? <div className="text-center py-16 bg-white rounded-xl border border-gray-100"><FiPackage size={48} className="mx-auto mb-4 text-gray-300" /><p className="text-gray-500">No hay equipos en esta categoría</p></div>
+        ? <div className="text-center py-16 bg-white rounded-xl border border-gray-100"><p className="text-gray-500">No hay equipos en esta categoría</p></div>
         : <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filtered.map(item => (
               <div key={item.id} className={`bg-white rounded-xl shadow-sm border overflow-hidden ${item.isActive ? 'border-gray-100' : 'border-gray-200 opacity-60'}`}>
                 <div className="relative h-32 bg-gray-50 group">
                   {item.image ? <img src={`http://localhost:5000${item.image}`} alt={item.name} className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-gray-300"><FiPackage size={36} /></div>}
+                    : <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">Sin imagen</div>}
                   <label className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 cursor-pointer transition-all">
-                    <FiImage size={20} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity">Cambiar</span>
                     <input type="file" accept="image/*" className="hidden" onChange={e => handleImage(item.id, e)} />
                   </label>
                 </div>
@@ -158,9 +156,9 @@ export default function EquipmentPage() {
                     <span className="text-xs text-gray-400">x{item.quantity}</span>
                   </div>
                   <div className="flex gap-1 mt-3 pt-2 border-t border-gray-100">
-                    <button onClick={() => handleEdit(item)} className="flex-1 py-1 rounded text-xs text-gray-600 hover:bg-gray-100 flex items-center justify-center gap-1"><FiEdit size={11} />Editar</button>
+                    <button onClick={() => handleEdit(item)} className="flex-1 py-1 rounded text-xs text-gray-600 hover:bg-gray-100 flex items-center justify-center gap-1">Editar</button>
                     <button onClick={() => handleToggle(item)} className="flex-1 py-1 rounded text-xs text-gray-600 hover:bg-gray-100">{item.isActive ? 'Desactivar' : 'Activar'}</button>
-                    <button onClick={() => handleDelete(item.id)} className="py-1 px-2 rounded text-xs text-red-500 hover:bg-red-50"><FiTrash2 size={11} /></button>
+                    <button onClick={() => handleDelete(item.id)} className="py-1 px-2 rounded text-xs text-red-500 hover:bg-red-50">Eliminar</button>
                   </div>
                 </div>
               </div>

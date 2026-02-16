@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiCheck } from 'react-icons/hi';
 import { configAPI, authAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import Button from '../components/common/Button';
@@ -144,7 +143,7 @@ const SetupWizard = () => {
                 i + 1 === step ? 'bg-primary-600 text-white scale-110' :
                 'bg-gray-200 text-gray-500'
               }`}>
-                {i + 1 < step ? <HiCheck className="w-5 h-5" /> : i + 1}
+                {i + 1 < step ? '✓' : i + 1}
               </div>
               {i < steps.length - 1 && (
                 <div className={`flex-1 h-1 mx-1 transition-all ${i + 1 < step ? 'bg-green-400' : 'bg-gray-200'}`} />
@@ -314,8 +313,8 @@ const SetupWizard = () => {
           {/* Step 5: Done */}
           {step === 5 && (
             <div className="text-center py-8">
-              <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <HiCheck className="w-14 h-14 text-green-600" />
+              <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-5xl text-green-600">
+                ✓
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">¡Todo listo!</h3>
               <p className="text-gray-600 mb-8">

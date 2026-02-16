@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import {
-  HiCalendar, HiClock, HiUser, HiMail, HiPhone,
-  HiCheck, HiMicrophone, HiFilm,
-} from 'react-icons/hi';
 import { bookingAPI, equipmentAPI, configAPI } from '../services/api';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
@@ -39,8 +35,8 @@ const PublicBooking = () => {
   };
 
   const contentTypes = [
-    { value: 'podcast', label: '🎙️ Podcast', icon: HiMicrophone },
-    { value: 'youtube', label: '📹 YouTube', icon: HiFilm },
+    { value: 'podcast', label: '🎙️ Podcast' },
+    { value: 'youtube', label: '📹 YouTube' },
     { value: 'social_media', label: '📱 Redes Sociales' },
     { value: 'interview', label: '🎤 Entrevista' },
     { value: 'other', label: '✨ Otro' },
@@ -170,8 +166,8 @@ const PublicBooking = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <HiCheck className="w-12 h-12 text-green-600" />
+          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl text-green-600">
+            ✓
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">¡Reserva Confirmada!</h2>
           <p className="text-gray-600 mb-6">Te hemos enviado los detalles por email</p>
@@ -242,7 +238,7 @@ const PublicBooking = () => {
                   i + 1 < step ? 'bg-green-500 text-white' :
                   i + 1 === step ? 'text-white' : 'bg-gray-200 text-gray-500'
                 }`} style={i + 1 === step ? { backgroundColor: primaryColor } : {}}>
-                  {i + 1 < step ? <HiCheck className="w-4 h-4" /> : i + 1}
+                  {i + 1 < step ? '✓' : i + 1}
                 </div>
                 <span className={`ml-2 text-xs font-medium hidden md:block ${i + 1 === step ? 'text-gray-900' : 'text-gray-400'}`}>
                   {title}
@@ -261,8 +257,7 @@ const PublicBooking = () => {
         {step === 1 && (
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <HiCalendar className="w-6 h-6 mr-2" style={{ color: primaryColor }} />
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
                 Selecciona la Fecha
               </h2>
               <Calendar
@@ -277,8 +272,7 @@ const PublicBooking = () => {
 
             {selectedDate && (
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <HiClock className="w-6 h-6 mr-2" style={{ color: primaryColor }} />
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Horario Disponible - {format(selectedDate, 'EEEE d', { locale: es })}
                 </h2>
 
@@ -386,7 +380,7 @@ const PublicBooking = () => {
                               {item.isIncluded ? '✓ Incluido gratis' : `+${config?.currency} $${parseFloat(item.extraCost).toFixed(2)}`}
                             </span>
                           </div>
-                          {sel && <HiCheck className="w-6 h-6 flex-shrink-0 mt-1" style={{ color: primaryColor }} />}
+                          {sel && <span className="flex-shrink-0 mt-1 text-lg" style={{ color: primaryColor }}>✓</span>}
                         </button>
                       );
                     })}
@@ -413,21 +407,20 @@ const PublicBooking = () => {
         {/* Step 3: Client Info */}
         {step === 3 && (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-              <HiUser className="w-6 h-6 mr-2" style={{ color: primaryColor }} />
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
               Tu Información
             </h2>
             <div className="space-y-4">
-              <Input label="Nombre Completo" required icon={HiUser}
+              <Input label="Nombre Completo" required
                 value={formData.clientName}
                 onChange={e => setFormData({ ...formData, clientName: e.target.value })}
                 placeholder="Juan Pérez" />
-              <Input label="Email" type="email" required icon={HiMail}
+              <Input label="Email" type="email" required
                 value={formData.clientEmail}
                 onChange={e => setFormData({ ...formData, clientEmail: e.target.value })}
                 placeholder="juan@email.com"
                 helperText="Recibirás la confirmación en este email" />
-              <Input label="Teléfono" required icon={HiPhone}
+              <Input label="Teléfono" required
                 value={formData.clientPhone}
                 onChange={e => setFormData({ ...formData, clientPhone: e.target.value })}
                 placeholder="+1 809-555-0100" />
@@ -474,8 +467,7 @@ const PublicBooking = () => {
               <h2 className="text-xl font-bold text-gray-900 mb-6">Confirma tu Reserva</h2>
               <div className="space-y-4">
                 {/* Date & Time */}
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
-                  <HiCalendar className="w-8 h-8" style={{ color: primaryColor }} />
+                <div className="p-4 bg-gray-50 rounded-xl">
                   <div>
                     <p className="text-xs text-gray-500">Fecha y Hora</p>
                     <p className="font-semibold text-gray-900">{format(selectedDate, 'PPP', { locale: es })}</p>
@@ -483,8 +475,7 @@ const PublicBooking = () => {
                   </div>
                 </div>
                 {/* Client */}
-                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
-                  <HiUser className="w-8 h-8" style={{ color: primaryColor }} />
+                <div className="p-4 bg-gray-50 rounded-xl">
                   <div>
                     <p className="text-xs text-gray-500">Cliente</p>
                     <p className="font-semibold text-gray-900">{formData.clientName}</p>

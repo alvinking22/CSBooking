@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiCash, HiArrowRight } from 'react-icons/hi';
 import { paymentAPI } from '../services/api';
 import Card from '../components/common/Card';
 import Loading from '../components/common/Loading';
@@ -44,9 +43,6 @@ const PaymentsPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <Card>
           <div className="flex items-center">
-            <div className="p-3 bg-green-100 rounded-full mr-4">
-              <HiCash className="w-6 h-6 text-green-600" />
-            </div>
             <div>
               <p className="text-sm text-gray-600">Ingresos Totales</p>
               <p className="text-2xl font-bold">${parseFloat(stats?.totalRevenue || 0).toFixed(2)}</p>
@@ -55,9 +51,6 @@ const PaymentsPage = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="p-3 bg-blue-100 rounded-full mr-4">
-              <HiCash className="w-6 h-6 text-blue-600" />
-            </div>
             <div>
               <p className="text-sm text-gray-600">Este Mes</p>
               <p className="text-2xl font-bold">${parseFloat(stats?.monthRevenue || 0).toFixed(2)}</p>
@@ -66,9 +59,6 @@ const PaymentsPage = () => {
         </Card>
         <Card>
           <div className="flex items-center">
-            <div className="p-3 bg-yellow-100 rounded-full mr-4">
-              <HiCash className="w-6 h-6 text-yellow-600" />
-            </div>
             <div>
               <p className="text-sm text-gray-600">Total de Pagos</p>
               <p className="text-2xl font-bold">{payments.length}</p>
@@ -116,9 +106,6 @@ const PaymentsPage = () => {
               onClick={() => payment.Booking && navigate(`/admin/bookings/${payment.Booking.id}`)}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-green-100 rounded-full">
-                    <HiCash className="w-6 h-6 text-green-600" />
-                  </div>
                   <div>
                     <div className="flex items-center space-x-3 mb-1">
                       <p className="font-bold text-gray-900 text-lg">${parseFloat(payment.amount).toFixed(2)}</p>
@@ -144,7 +131,7 @@ const PaymentsPage = () => {
                     </p>
                     <p className="text-xs text-gray-400">{format(new Date(payment.paymentDate), 'HH:mm')}</p>
                   </div>
-                  {payment.Booking && <HiArrowRight className="w-5 h-5 text-gray-400" />}
+                  {payment.Booking && <span className="text-gray-400">›</span>}
                 </div>
               </div>
             </Card>
@@ -153,7 +140,6 @@ const PaymentsPage = () => {
       ) : (
         <Card>
           <div className="text-center py-16">
-            <HiCash className="w-16 h-16 mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500">No hay pagos registrados</p>
             <p className="text-gray-400 text-sm mt-1">Los pagos se registran desde el detalle de cada reserva</p>
           </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { HiSave, HiCog, HiClock, HiCash, HiMail } from 'react-icons/hi';
 import { configAPI } from '../services/api';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -57,10 +56,10 @@ const SettingsPage = () => {
     { key: 'sunday', label: 'Domingo' },
   ];
   const tabs = [
-    { id: 'business', name: 'Negocio', icon: HiCog },
-    { id: 'hours', name: 'Horarios', icon: HiClock },
-    { id: 'pricing', name: 'Precios', icon: HiCash },
-    { id: 'emails', name: 'Emails', icon: HiMail },
+    { id: 'business', name: 'Negocio' },
+    { id: 'hours', name: 'Horarios' },
+    { id: 'pricing', name: 'Precios' },
+    { id: 'emails', name: 'Emails' },
   ];
 
   if (loading) return <Loading fullScreen text="Cargando configuración..." />;
@@ -72,7 +71,7 @@ const SettingsPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">Configuración</h1>
           <p className="text-gray-600 mt-1">Personaliza tu estudio y sistema de reservas</p>
         </div>
-        <Button variant="primary" icon={HiSave} onClick={handleSave} loading={saving}>Guardar</Button>
+        <Button variant="primary" onClick={handleSave} loading={saving}>Guardar</Button>
       </div>
 
       <div className="border-b mb-6 flex space-x-8">
@@ -81,7 +80,7 @@ const SettingsPage = () => {
             className={`flex items-center pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
               activeTab === t.id ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}>
-            <t.icon className="w-4 h-4 mr-2" />{t.name}
+            {t.name}
           </button>
         ))}
       </div>

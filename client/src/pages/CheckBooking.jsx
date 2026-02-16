@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { bookingAPI } from '../services/api';
 import { useConfig } from '../contexts/ConfigContext';
-import { FiSearch, FiArrowLeft, FiCalendar, FiClock, FiDollarSign, FiPackage } from 'react-icons/fi';
 
 const STATUS_LABELS = {
   pending: { label: 'Pendiente', class: 'bg-yellow-100 text-yellow-800' },
@@ -49,7 +48,7 @@ export default function CheckBooking() {
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-2xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 text-sm">
-          <FiArrowLeft /> Volver al inicio
+          ← Volver al inicio
         </Link>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
@@ -70,7 +69,7 @@ export default function CheckBooking() {
             <button type="submit" disabled={loading || !bookingNumber.trim()}
               className="w-full py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
               style={{ background: primaryColor }}>
-              <FiSearch /> {loading ? 'Buscando...' : 'Buscar Reserva'}
+              {loading ? 'Buscando...' : 'Buscar Reserva'}
             </button>
           </form>
 
@@ -96,8 +95,7 @@ export default function CheckBooking() {
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <FiCalendar style={{ color: primaryColor }} className="mt-0.5" />
+                  <div>
                     <div>
                       <p className="text-xs text-gray-500">Fecha</p>
                       <p className="font-medium text-sm">
@@ -105,8 +103,7 @@ export default function CheckBooking() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <FiClock style={{ color: primaryColor }} className="mt-0.5" />
+                  <div>
                     <div>
                       <p className="text-xs text-gray-500">Horario</p>
                       <p className="font-medium text-sm">
@@ -114,16 +111,14 @@ export default function CheckBooking() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <FiDollarSign style={{ color: primaryColor }} className="mt-0.5" />
+                  <div>
                     <div>
                       <p className="text-xs text-gray-500">Total</p>
                       <p className="font-medium text-sm">${parseFloat(booking.totalPrice).toFixed(2)} {config?.currency}</p>
                     </div>
                   </div>
                   {booking.remainingAmount > 0 && (
-                    <div className="flex items-start gap-3">
-                      <FiDollarSign className="mt-0.5 text-orange-500" />
+                    <div>
                       <div>
                         <p className="text-xs text-gray-500">Pendiente</p>
                         <p className="font-medium text-sm text-orange-600">${parseFloat(booking.remainingAmount).toFixed(2)}</p>
@@ -134,8 +129,8 @@ export default function CheckBooking() {
 
                 {booking.equipment && booking.equipment.length > 0 && (
                   <div className="mt-4">
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                      <FiPackage size={12} /> Equipos seleccionados
+                    <div className="text-xs text-gray-500 mb-2">
+                      Equipos seleccionados
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {booking.equipment.map(eq => (

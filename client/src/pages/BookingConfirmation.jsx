@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { bookingAPI } from '../services/api';
 import { useConfig } from '../contexts/ConfigContext';
-import { FiCheckCircle, FiCalendar, FiClock, FiMail, FiPhone, FiMapPin, FiDollarSign } from 'react-icons/fi';
 
 export default function BookingConfirmation() {
   const { bookingNumber } = useParams();
@@ -31,8 +30,8 @@ export default function BookingConfirmation() {
       <div className="max-w-xl mx-auto">
         {/* Success Card */}
         <div className="bg-white rounded-2xl shadow-lg p-8 text-center animate-fade-in">
-          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: `${primaryColor}20` }}>
-            <FiCheckCircle size={48} style={{ color: primaryColor }} />
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl" style={{ background: `${primaryColor}20`, color: primaryColor }}>
+            ✓
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">¡Reserva Creada!</h1>
           <p className="text-gray-500 mb-6">Recibirás un email de confirmación en breve</p>
@@ -44,16 +43,16 @@ export default function BookingConfirmation() {
 
           {booking && (
             <div className="text-left space-y-3 mb-6">
-              <DetailRow icon={<FiCalendar style={{ color: primaryColor }} />}
+              <DetailRow
                 label="Fecha"
                 value={format(new Date(booking.sessionDate + 'T12:00:00'), "EEEE, d 'de' MMMM yyyy", { locale: es })} />
-              <DetailRow icon={<FiClock style={{ color: primaryColor }} />}
+              <DetailRow
                 label="Horario"
                 value={`${booking.startTime?.slice(0, 5)} - ${booking.endTime?.slice(0, 5)}`} />
-              <DetailRow icon={<FiMail style={{ color: primaryColor }} />}
+              <DetailRow
                 label="Email"
                 value={booking.clientEmail} />
-              <DetailRow icon={<FiDollarSign style={{ color: primaryColor }} />}
+              <DetailRow
                 label="Total"
                 value={`${config?.currency || 'USD'} $${parseFloat(booking.totalPrice).toFixed(2)}`} />
               {booking.depositAmount > 0 && (
@@ -77,9 +76,9 @@ export default function BookingConfirmation() {
           {config && (
             <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500">
               <p className="font-medium text-gray-700 mb-1">{config.businessName}</p>
-              {config.address && <p className="flex items-center justify-center gap-1"><FiMapPin size={12} /> {config.address}</p>}
-              {config.phone && <p className="flex items-center justify-center gap-1"><FiPhone size={12} /> {config.phone}</p>}
-              {config.email && <p className="flex items-center justify-center gap-1"><FiMail size={12} /> {config.email}</p>}
+              {config.address && <p>{config.address}</p>}
+              {config.phone && <p>{config.phone}</p>}
+              {config.email && <p>{config.email}</p>}
             </div>
           )}
         </div>
@@ -88,12 +87,9 @@ export default function BookingConfirmation() {
   );
 }
 
-const DetailRow = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3">
-    <span className="mt-0.5">{icon}</span>
-    <div>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="font-medium text-gray-900 text-sm">{value}</p>
-    </div>
+const DetailRow = ({ label, value }) => (
+  <div>
+    <p className="text-xs text-gray-500">{label}</p>
+    <p className="font-medium text-gray-900 text-sm">{value}</p>
   </div>
 );

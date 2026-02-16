@@ -5,7 +5,6 @@ import { es } from 'date-fns/locale';
 import { bookingAPI, paymentAPI } from '../services/api';
 import { useConfig } from '../contexts/ConfigContext';
 import toast from 'react-hot-toast';
-import { FiArrowLeft, FiCheck, FiX, FiDollarSign, FiEdit, FiSave, FiPackage } from 'react-icons/fi';
 
 const STATUS = {
   pending: { label: 'Pendiente', bg: 'bg-yellow-100', text: 'text-yellow-800' },
@@ -116,7 +115,7 @@ export default function BookingDetail() {
     <div className="space-y-6 animate-fade-in max-w-4xl">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Link to="/admin/bookings" className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"><FiArrowLeft /></Link>
+        <Link to="/admin/bookings" className="p-2 rounded-lg hover:bg-gray-100 text-gray-600">←</Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-gray-900">{booking.bookingNumber}</h1>
@@ -127,17 +126,17 @@ export default function BookingDetail() {
         <div className="flex gap-2">
           {booking.status === 'pending' && (
             <button onClick={handleConfirm} className="btn-success text-sm">
-              <FiCheck size={16} /> Confirmar
+              Confirmar
             </button>
           )}
           {!['cancelled', 'completed'].includes(booking.status) && (
             <button onClick={() => setShowCancelForm(true)} className="btn-danger text-sm">
-              <FiX size={16} /> Cancelar
+              Cancelar
             </button>
           )}
           {booking.status === 'confirmed' && (
             <button onClick={() => handleStatusUpdate('completed')} className="btn-primary text-sm" style={{ background: '#10B981' }}>
-              <FiCheck size={16} /> Completar
+              Completar
             </button>
           )}
         </div>
@@ -195,8 +194,8 @@ export default function BookingDetail() {
           {/* Equipment */}
           {booking.equipment?.length > 0 && (
             <div className="card">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <FiPackage size={16} /> Equipos del Set
+              <h3 className="font-semibold text-gray-900 mb-4">
+                Equipos del Set
               </h3>
               <div className="space-y-2">
                 {booking.equipment.map(eq => (
@@ -304,7 +303,7 @@ export default function BookingDetail() {
               <h3 className="font-semibold text-gray-900">📝 Notas Internas</h3>
               <button onClick={() => editingNotes ? handleSaveNotes() : setEditingNotes(true)}
                 className="text-sm px-3 py-1.5 rounded-lg flex items-center gap-1" style={{ background: `${pc}15`, color: pc }}>
-                {editingNotes ? <><FiSave size={14} /> Guardar</> : <><FiEdit size={14} /> Editar</>}
+                {editingNotes ? 'Guardar' : 'Editar'}
               </button>
             </div>
             {editingNotes

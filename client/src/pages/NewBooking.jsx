@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HiArrowLeft, HiCalendar, HiCheck } from 'react-icons/hi';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { bookingAPI, equipmentAPI, configAPI } from '../services/api';
@@ -144,7 +143,7 @@ const NewBooking = () => {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center space-x-4 mb-6">
         <button onClick={() => navigate('/admin/bookings')} className="text-gray-500 hover:text-gray-700">
-          <HiArrowLeft className="w-6 h-6" />
+          ←
         </button>
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Nueva Reserva</h1>
@@ -159,7 +158,7 @@ const NewBooking = () => {
             <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
               i+1 < step ? 'bg-green-500 text-white' : i+1 === step ? 'bg-primary-600 text-white' : 'bg-gray-200 text-gray-500'
             }`}>
-              {i+1 < step ? <HiCheck className="w-5 h-5" /> : i+1}
+              {i+1 < step ? '✓' : i+1}
             </div>
             <span className={`ml-2 text-sm font-medium ${i+1===step ? 'text-primary-600' : 'text-gray-400'}`}>{s}</span>
             {i < steps.length-1 && <div className={`flex-1 h-1 mx-3 ${i+1 < step ? 'bg-green-400' : 'bg-gray-200'}`} />}
@@ -178,7 +177,6 @@ const NewBooking = () => {
             <Card title={`Horarios - ${format(selectedDate, 'PPP', { locale: es })}`}>
               {availableHours.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
-                  <HiCalendar className="w-12 h-12 mx-auto text-gray-300 mb-2" />
                   <p>No hay horarios disponibles</p>
                 </div>
               ) : (
@@ -250,7 +248,7 @@ const NewBooking = () => {
                           {item.isIncluded ? '✓ Incluido' : `+$${parseFloat(item.extraCost).toFixed(2)}`}
                         </p>
                       </div>
-                      {sel && <HiCheck className="w-6 h-6 text-primary-600 flex-shrink-0" />}
+                      {sel && <span className="text-primary-600 flex-shrink-0 text-lg">✓</span>}
                     </button>
                   );
                 })}

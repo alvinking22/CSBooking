@@ -6,9 +6,6 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../contexts/ConfigContext';
 import { bookingAPI, equipmentAPI } from '../services/api';
-import { FiCamera, FiMic, FiSun, FiImage, FiHeadphones, FiBox, FiCheck, FiClock, FiUser, FiMail, FiPhone, FiFileText, FiDollarSign, FiChevronRight, FiChevronLeft } from 'react-icons/fi';
-
-const CATEGORY_ICONS = { cameras: FiCamera, microphones: FiMic, lights: FiSun, backgrounds: FiImage, audio: FiHeadphones, accessories: FiBox, furniture: FiBox, other: FiBox };
 const CATEGORY_LABELS = { cameras: 'Cámaras', microphones: 'Micrófonos', lights: 'Iluminación', backgrounds: 'Fondos', audio: 'Audio', accessories: 'Accesorios', furniture: 'Mobiliario', other: 'Otros' };
 const CONTENT_TYPES = [
   { value: 'podcast', label: '🎙️ Podcast' },
@@ -213,7 +210,7 @@ export default function BookingPage() {
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all
                   ${step > i + 1 ? 'text-white' : step === i + 1 ? 'text-white' : 'bg-gray-200 text-gray-500'}`}
                   style={{ background: step >= i + 1 ? primaryColor : undefined }}>
-                  {step > i + 1 ? <FiCheck size={14} /> : i + 1}
+                  {step > i + 1 ? '✓' : i + 1}
                 </div>
                 <span className={`mt-2 text-xs font-medium hidden sm:block ${step === i + 1 ? 'text-gray-900' : 'text-gray-400'}`}>
                   {s}
@@ -328,15 +325,13 @@ export default function BookingPage() {
             </div>
             {Object.keys(groupedEquipment).length === 0
               ? <div className="text-center py-12 text-gray-400">
-                  <FiBox size={48} className="mx-auto mb-4 opacity-50" />
                   <p>No hay equipos configurados aún</p>
                 </div>
               : Object.entries(groupedEquipment).map(([category, items]) => {
-                  const Icon = CATEGORY_ICONS[category] || FiBox;
                   return (
                     <div key={category} className="mb-6">
                       <h3 className="flex items-center gap-2 font-semibold text-gray-700 mb-3">
-                        <Icon size={18} /> {CATEGORY_LABELS[category] || category}
+                        {CATEGORY_LABELS[category] || category}
                       </h3>
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {items.map(item => {
@@ -350,9 +345,9 @@ export default function BookingPage() {
                               style={{ borderColor: selected ? primaryColor : undefined, background: selected ? `${primaryColor}10` : undefined }}
                             >
                               {selected && (
-                                <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-white"
+                                <div className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs"
                                   style={{ background: primaryColor }}>
-                                  <FiCheck size={12} />
+                                  ✓
                                 </div>
                               )}
                               {item.image && (
@@ -387,22 +382,22 @@ export default function BookingPage() {
             </div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
               <div>
-                <label className="label"><FiUser className="inline mr-1" size={14} />Nombre Completo *</label>
+                <label className="label">Nombre Completo *</label>
                 <input type="text" value={clientData.name} onChange={e => setClientData({ ...clientData, name: e.target.value })}
                   className="input-field" placeholder="Tu nombre completo" />
               </div>
               <div>
-                <label className="label"><FiMail className="inline mr-1" size={14} />Correo Electrónico *</label>
+                <label className="label">Correo Electrónico *</label>
                 <input type="email" value={clientData.email} onChange={e => setClientData({ ...clientData, email: e.target.value })}
                   className="input-field" placeholder="tucorreo@ejemplo.com" />
               </div>
               <div>
-                <label className="label"><FiPhone className="inline mr-1" size={14} />Teléfono *</label>
+                <label className="label">Teléfono *</label>
                 <input type="tel" value={clientData.phone} onChange={e => setClientData({ ...clientData, phone: e.target.value })}
                   className="input-field" placeholder="+1 809-000-0000" />
               </div>
               <div>
-                <label className="label"><FiFileText className="inline mr-1" size={14} />Descripción del Proyecto</label>
+                <label className="label">Descripción del Proyecto</label>
                 <textarea value={clientData.projectDescription} onChange={e => setClientData({ ...clientData, projectDescription: e.target.value })}
                   className="input-field h-24 resize-none" placeholder="Cuéntanos sobre tu proyecto, episodio, tema, etc." />
               </div>
@@ -496,7 +491,7 @@ export default function BookingPage() {
             disabled={step === 1}
             className="btn-secondary disabled:invisible"
           >
-            <FiChevronLeft /> Anterior
+            ← Anterior
           </button>
 
           {step < 4 ? (
@@ -506,7 +501,7 @@ export default function BookingPage() {
               className="btn-primary"
               style={{ background: primaryColor }}
             >
-              Siguiente <FiChevronRight />
+              Siguiente ›
             </button>
           ) : (
             <button

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useConfig } from '../contexts/ConfigContext';
 import toast from 'react-hot-toast';
-import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function Login() {
   const { login } = useAuth();
@@ -50,20 +49,18 @@ export default function Login() {
             <div>
               <label className="label">Correo Electrónico</label>
               <div className="relative">
-                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  className="input-field pl-9" placeholder="admin@studio.com" required />
+                  className="input-field" placeholder="admin@studio.com" required />
               </div>
             </div>
             <div>
               <label className="label">Contraseña</label>
               <div className="relative">
-                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                 <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
-                  className="input-field pl-9 pr-9" placeholder="••••••••" required />
+                  className="input-field pr-20" placeholder="••••••••" required />
                 <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  {showPass ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600">
+                  {showPass ? 'Ocultar' : 'Mostrar'}
                 </button>
               </div>
             </div>

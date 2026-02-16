@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { bookingAPI, paymentAPI } from '../services/api';
 import { useConfig } from '../contexts/ConfigContext';
-import { FiCalendar, FiDollarSign, FiClock, FiAlertCircle, FiChevronRight, FiTrendingUp } from 'react-icons/fi';
 
 const STATUS = {
   pending: { label: 'Pendiente', bg: 'bg-yellow-100', text: 'text-yellow-800' },
@@ -29,10 +28,10 @@ export default function Dashboard() {
   if (loading) return <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: pc }}></div></div>;
 
   const cards = [
-    { label: 'Reservas Este Mes', value: stats?.thisMonthBookings || 0, icon: FiCalendar, color: pc, sub: `${stats?.totalBookings || 0} en total` },
-    { label: 'Ingresos del Mes', value: `$${parseFloat(payStats?.monthRevenue || 0).toFixed(2)}`, icon: FiTrendingUp, color: '#10B981', sub: `$${parseFloat(payStats?.totalRevenue || 0).toFixed(2)} histórico` },
-    { label: 'Pendientes', value: stats?.pendingBookings || 0, icon: FiClock, color: '#F59E0B', sub: 'Esperando confirmación' },
-    { label: 'Pagos Pendientes', value: payStats?.pendingPayments || 0, icon: FiAlertCircle, color: '#EF4444', sub: 'Por registrar' },
+    { label: 'Reservas Este Mes', value: stats?.thisMonthBookings || 0, color: pc, sub: `${stats?.totalBookings || 0} en total` },
+    { label: 'Ingresos del Mes', value: `$${parseFloat(payStats?.monthRevenue || 0).toFixed(2)}`, color: '#10B981', sub: `$${parseFloat(payStats?.totalRevenue || 0).toFixed(2)} histórico` },
+    { label: 'Pendientes', value: stats?.pendingBookings || 0, color: '#F59E0B', sub: 'Esperando confirmación' },
+    { label: 'Pagos Pendientes', value: payStats?.pendingPayments || 0, color: '#EF4444', sub: 'Por registrar' },
   ];
 
   return (
@@ -46,7 +45,7 @@ export default function Dashboard() {
         {cards.map((c, i) => (
           <div key={i} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <div className="p-2 rounded-xl w-fit mb-3" style={{ background: `${c.color}15` }}>
-              <c.icon size={20} style={{ color: c.color }} />
+              <div className="w-5 h-5 rounded-full" style={{ background: c.color }} />
             </div>
             <p className="text-2xl font-bold text-gray-900">{c.value}</p>
             <p className="text-sm font-medium text-gray-600 mt-0.5">{c.label}</p>
@@ -59,11 +58,11 @@ export default function Dashboard() {
         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Próximas Reservas</h2>
           <Link to="/admin/bookings" className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1">
-            Ver todas <FiChevronRight size={14} />
+            Ver todas ›
           </Link>
         </div>
         {!stats?.upcomingBookings?.length
-          ? <div className="p-8 text-center text-gray-400"><FiCalendar size={32} className="mx-auto mb-2 opacity-50" /><p>No hay reservas próximas</p></div>
+          ? <div className="p-8 text-center text-gray-400"><p>No hay reservas próximas</p></div>
           : <div className="divide-y divide-gray-50">
               {stats.upcomingBookings.map(b => {
                 const sc = STATUS[b.status] || STATUS.pending;
@@ -81,7 +80,7 @@ export default function Dashboard() {
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${sc.bg} ${sc.text}`}>{sc.label}</span>
                       <span className="text-sm font-semibold">${parseFloat(b.totalPrice).toFixed(2)}</span>
                     </div>
-                    <FiChevronRight size={16} className="text-gray-400" />
+                    <span className="text-gray-400">›</span>
                   </Link>
                 );
               })}

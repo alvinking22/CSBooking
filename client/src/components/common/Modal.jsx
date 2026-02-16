@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { HiX } from 'react-icons/hi';
 import clsx from 'clsx';
 
 const Modal = ({
@@ -74,7 +73,7 @@ const Modal = ({
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <HiX className="w-6 h-6" />
+                <span className="text-2xl leading-none">&times;</span>
               </button>
             </div>
           )}

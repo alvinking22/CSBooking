@@ -13,7 +13,6 @@ const Input = ({
   helperText,
   required = false,
   disabled = false,
-  icon: Icon,
   className,
   inputClassName,
   ...props
@@ -31,12 +30,6 @@ const Input = ({
       )}
       
       <div className="relative">
-        {Icon && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Icon className="h-5 w-5 text-gray-400" />
-          </div>
-        )}
-        
         <input
           id={name}
           name={name}
@@ -49,7 +42,6 @@ const Input = ({
           className={clsx(
             'block w-full rounded-lg border shadow-sm transition-colors',
             'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
-            Icon && 'pl-10',
             error
               ? 'border-red-300 text-red-900 placeholder-red-300'
               : 'border-gray-300',

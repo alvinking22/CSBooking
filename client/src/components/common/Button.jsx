@@ -11,7 +11,6 @@ const Button = ({
   type = 'button',
   onClick,
   className,
-  icon: Icon,
   ...props
 }) => {
   const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
@@ -72,7 +71,6 @@ const Button = ({
         </>
       ) : (
         <>
-          {Icon && <Icon className="w-5 h-5 mr-2" />}
           {children}
         </>
       )}
