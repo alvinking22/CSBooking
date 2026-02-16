@@ -236,8 +236,25 @@ exports.createBooking = async (req, res, next) => {
     // Calculate pricing
     const prices = await calculatePrice(duration, equipmentIds);
 
+    // Generate booking number
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0].replace(/-/g, '');
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrowStart = new Date(todayStart);
+    tomorrowStart.setDate(tomorrowStart.getDate() + 1);
+    const dayCount = await Booking.count({
+      where: {
+        createdAt: {
+          [Op.gte]: todayStart,
+          [Op.lt]: tomorrowStart
+        }
+      }
+    });
+    const bookingNumber = `CS-${dateStr}-${String(dayCount + 1).padStart(3, '0')}`;
+
     // Create booking
     const booking = await Booking.create({
+      bookingNumber,
       clientName,
       clientEmail,
       clientPhone,
