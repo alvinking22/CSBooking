@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 const { sequelize } = require('../config/database');
 
 const Booking = sequelize.define('Booking', {
@@ -168,8 +168,8 @@ Booking.beforeCreate(async (booking) => {
   const count = await Booking.count({
     where: {
       createdAt: {
-        [sequelize.Sequelize.Op.gte]: today,
-        [sequelize.Sequelize.Op.lt]: tomorrow
+        [Op.gte]: today,
+        [Op.lt]: tomorrow
       }
     }
   });
