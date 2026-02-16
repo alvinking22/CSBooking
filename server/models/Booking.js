@@ -158,13 +158,23 @@ const Booking = sequelize.define('Booking', {
 // Hook para generar booking number antes de crear
 Booking.beforeCreate(async (booking) => {
   const date = new Date().toISOString().split('T')[0].replace(/-/g, '');
+
+  // Contar reservas del día actual usando un rango de fechas
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   const count = await Booking.count({
-    where: sequelize.where(
-      sequelize.fn('date', sequelize.col('createdAt')),
-      sequelize.fn('date', new Date())
-    )
+    where: {
+      createdAt: {
+        [sequelize.Sequelize.Op.gte]: today,
+        [sequelize.Sequelize.Op.lt]: tomorrow
+      }
+    }
   });
-  booking.bookingNumber = `BK-${date}-${String(count + 1).padStart(3, '0')}`;
+
+  booking.bookingNumber = `CS-${date}-${String(count + 1).padStart(3, '0')}`;
 });
 
 module.exports = Booking;
