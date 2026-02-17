@@ -47,10 +47,16 @@ const Booking = sequelize.define('Booking', {
     allowNull: false,
     comment: 'Duración en horas'
   },
-  // Tipo de contenido
+  // Tipo de servicio (nuevo - reemplaza contentType)
+  serviceTypeId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    comment: 'Referencia al tipo de servicio seleccionado'
+  },
+  // Tipo de contenido (legacy - se mantiene para compatibilidad)
   contentType: {
     type: DataTypes.ENUM('podcast', 'youtube', 'social_media', 'interview', 'other'),
-    allowNull: false,
+    allowNull: true,
     defaultValue: 'other'
   },
   projectDescription: {

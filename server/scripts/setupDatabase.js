@@ -1,4 +1,4 @@
-const { syncDatabase, User, BusinessConfig } = require('../models');
+const { syncDatabase, User, BusinessConfig, ServiceType } = require('../models');
 require('dotenv').config();
 
 const setupDatabase = async () => {
@@ -47,6 +47,15 @@ const setupDatabase = async () => {
     });
 
     console.log('✅ Default business configuration created');
+
+    // Create default service types
+    await ServiceType.bulkCreate([
+      { name: 'Podcast', description: 'Sesión de grabación para podcast', basePrice: 100.00, duration: 2, order: 1 },
+      { name: 'Música', description: 'Sesión de grabación musical', basePrice: 150.00, duration: 3, order: 2 },
+      { name: 'Video', description: 'Sesión de grabación de video', basePrice: 200.00, duration: 4, order: 3 },
+    ]);
+
+    console.log('✅ Default service types created (Podcast, Música, Video)');
 
     console.log('\n🎉 Database setup completed successfully!');
     console.log('\n📝 Next steps:');

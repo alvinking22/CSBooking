@@ -32,6 +32,11 @@ const BookingEquipment = sequelize.define('BookingEquipment', {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0.00,
     comment: 'Costo de este equipo en esta reserva'
+  },
+  selectedOption: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'ID de la variante seleccionada por el cliente'
   }
 }, {
   tableName: 'booking_equipment',

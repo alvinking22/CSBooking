@@ -1,4 +1,4 @@
-const { Booking, Equipment, BookingEquipment, Payment, BusinessConfig } = require('../models');
+const { Booking, Equipment, BookingEquipment, Payment, BusinessConfig, ServiceType } = require('../models');
 const { Op } = require('sequelize');
 const { sendBookingConfirmation, sendBookingReminder, sendBookingCancellation } = require('../utils/emailService');
 
@@ -38,9 +38,18 @@ const checkAvailability = async (sessionDate, startTime, endTime, excludeBooking
 };
 
 // Helper function to calculate price
-const calculatePrice = async (duration, equipmentIds = []) => {
+const calculatePrice = async (duration, equipmentIds = [], serviceTypeId = null) => {
   const config = await BusinessConfig.findOne();
-  let basePrice = parseFloat(config.hourlyRate) * parseFloat(duration);
+  let basePrice;
+
+  if (serviceTypeId) {
+    // Precio viene del ServiceType seleccionado
+    const serviceType = await ServiceType.findByPk(serviceTypeId);
+    basePrice = serviceType ? parseFloat(serviceType.basePrice) : parseFloat(config.hourlyRate) * parseFloat(duration);
+  } else {
+    basePrice = parseFloat(config.hourlyRate) * parseFloat(duration);
+  }
+
   let equipmentCost = 0;
 
   if (equipmentIds.length > 0) {
@@ -143,11 +152,16 @@ exports.getBookingById = async (req, res, next) => {
         {
           model: Equipment,
           as: 'equipment',
-          through: { attributes: ['quantity', 'cost'] }
+          through: { attributes: ['quantity', 'cost', 'selectedOption'] }
         },
         {
           model: Payment,
           as: 'payments'
+        },
+        {
+          model: ServiceType,
+          as: 'serviceType',
+          required: false
         }
       ]
     });
@@ -184,7 +198,12 @@ exports.getBookingByNumber = async (req, res, next) => {
         {
           model: Equipment,
           as: 'equipment',
-          through: { attributes: ['quantity', 'cost'] }
+          through: { attributes: ['quantity', 'cost', 'selectedOption'] }
+        },
+        {
+          model: ServiceType,
+          as: 'serviceType',
+          required: false
         }
       ]
     });
@@ -217,12 +236,28 @@ exports.createBooking = async (req, res, next) => {
       sessionDate,
       startTime,
       endTime,
-      duration,
+      duration: durationInput,
       contentType,
+      serviceTypeId,
       projectDescription,
       equipmentIds,
-      clientNotes
+      clientNotes,
+      equipmentDetails // [{equipmentId, quantity, selectedOption}]
     } = req.body;
+
+    // Determinar duración: si hay serviceTypeId, usar la del servicio
+    let duration = durationInput;
+    let serviceType = null;
+    if (serviceTypeId) {
+      serviceType = await ServiceType.findByPk(serviceTypeId);
+      if (!serviceType || !serviceType.isActive) {
+        return res.status(400).json({
+          success: false,
+          message: 'El tipo de servicio seleccionado no está disponible'
+        });
+      }
+      duration = serviceType.duration;
+    }
 
     // Check availability
     const isAvailable = await checkAvailability(sessionDate, startTime, endTime);
@@ -234,7 +269,7 @@ exports.createBooking = async (req, res, next) => {
     }
 
     // Calculate pricing
-    const prices = await calculatePrice(duration, equipmentIds);
+    const prices = await calculatePrice(duration, equipmentIds || [], serviceTypeId);
 
     // Generate booking number
     const now = new Date();
@@ -262,7 +297,8 @@ exports.createBooking = async (req, res, next) => {
       startTime,
       endTime,
       duration,
-      contentType,
+      contentType: contentType || 'other',
+      serviceTypeId: serviceTypeId || null,
       projectDescription,
       clientNotes,
       basePrice: prices.basePrice,
@@ -275,22 +311,27 @@ exports.createBooking = async (req, res, next) => {
     });
 
     // Add equipment to booking
-    if (equipmentIds && equipmentIds.length > 0) {
+    const eqIds = equipmentIds && equipmentIds.length > 0 ? equipmentIds : [];
+    if (eqIds.length > 0) {
       const equipment = await Equipment.findAll({
         where: {
-          id: equipmentIds,
+          id: eqIds,
           isActive: true
         }
       });
 
-      const bookingEquipment = equipment.map(item => ({
-        bookingId: booking.id,
-        equipmentId: item.id,
-        quantity: 1,
-        cost: item.isIncluded ? 0 : parseFloat(item.extraCost)
-      }));
+      const bookingEquipmentData = equipment.map(item => {
+        const detail = equipmentDetails ? equipmentDetails.find(d => d.equipmentId === item.id) : null;
+        return {
+          bookingId: booking.id,
+          equipmentId: item.id,
+          quantity: detail?.quantity || 1,
+          selectedOption: detail?.selectedOption || null,
+          cost: item.isIncluded ? 0 : parseFloat(item.extraCost)
+        };
+      });
 
-      await BookingEquipment.bulkCreate(bookingEquipment);
+      await BookingEquipment.bulkCreate(bookingEquipmentData);
     }
 
     // Send confirmation email
@@ -300,13 +341,18 @@ exports.createBooking = async (req, res, next) => {
       await booking.update({ confirmationSentAt: new Date() });
     }
 
-    // Fetch booking with equipment
+    // Fetch booking with equipment and service type
     const createdBooking = await Booking.findByPk(booking.id, {
       include: [
         {
           model: Equipment,
           as: 'equipment',
-          through: { attributes: ['quantity', 'cost'] }
+          through: { attributes: ['quantity', 'cost', 'selectedOption'] }
+        },
+        {
+          model: ServiceType,
+          as: 'serviceType',
+          required: false
         }
       ]
     });

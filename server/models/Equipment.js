@@ -64,6 +64,16 @@ const Equipment = sequelize.define('Equipment', {
     type: DataTypes.JSON,
     allowNull: true,
     comment: 'Especificaciones técnicas adicionales'
+  },
+  allowQuantitySelection: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    comment: 'Si el cliente puede seleccionar la cantidad'
+  },
+  options: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    comment: 'Variantes/opciones del equipo con fotos y costos'
   }
 }, {
   tableName: 'equipment',

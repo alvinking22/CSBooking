@@ -17,6 +17,7 @@ import NewBooking from './pages/NewBooking';
 import EquipmentPage from './pages/EquipmentPage';
 import SettingsPage from './pages/SettingsPage';
 import PaymentsPage from './pages/PaymentsPage';
+import ServicesPage from './pages/ServicesPage';
 import AdminLayout from './components/admin/AdminLayout';
 
 const ProtectedRoute = ({ children }) => {
@@ -46,6 +47,7 @@ function App() {
               <Route path="bookings" element={<BookingsList />} />
               <Route path="bookings/new" element={<NewBooking />} />
               <Route path="bookings/:id" element={<BookingDetail />} />
+              <Route path="services" element={<ServicesPage />} />
               <Route path="equipment" element={<EquipmentPage />} />
               <Route path="payments" element={<PaymentsPage />} />
               <Route path="settings" element={<SettingsPage />} />

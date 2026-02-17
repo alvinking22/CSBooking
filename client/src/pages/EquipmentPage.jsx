@@ -9,7 +9,7 @@ const CATS = [
   { value: 'audio', label: '🎧 Audio' }, { value: 'accessories', label: '🔧 Accesorios' },
   { value: 'furniture', label: '🪑 Mobiliario' }, { value: 'other', label: '📦 Otros' },
 ];
-const EMPTY = { name: '', category: 'cameras', description: '', quantity: 1, isIncluded: true, extraCost: 0, isActive: true };
+const EMPTY = { name: '', category: 'cameras', description: '', quantity: 1, isIncluded: true, extraCost: 0, isActive: true, allowQuantitySelection: false, options: null };
 
 export default function EquipmentPage() {
   const { config } = useConfig();
@@ -43,7 +43,12 @@ export default function EquipmentPage() {
 
   const handleEdit = (item) => {
     setEditing(item.id);
-    setForm({ name: item.name, category: item.category, description: item.description || '', quantity: item.quantity, isIncluded: item.isIncluded, extraCost: item.extraCost, isActive: item.isActive });
+    setForm({
+      name: item.name, category: item.category, description: item.description || '',
+      quantity: item.quantity, isIncluded: item.isIncluded, extraCost: item.extraCost,
+      isActive: item.isActive, allowQuantitySelection: item.allowQuantitySelection || false,
+      options: item.options ? (typeof item.options === 'string' ? JSON.parse(item.options) : item.options) : null,
+    });
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -111,6 +116,78 @@ export default function EquipmentPage() {
                 <input type="number" min="0" step="0.01" value={form.extraCost} onChange={e => setForm({ ...form, extraCost: parseFloat(e.target.value) || 0 })} className="input-field" />
               </div>
             )}
+            <div className="sm:col-span-2 flex items-center gap-3 py-2 border-t border-gray-100 mt-2">
+              <input type="checkbox" id="allowQty" checked={form.allowQuantitySelection} onChange={e => setForm({ ...form, allowQuantitySelection: e.target.checked })} className="w-4 h-4 rounded" />
+              <label htmlFor="allowQty" className="text-sm text-gray-700 cursor-pointer">Permitir que el cliente seleccione cantidad (1-10)</label>
+            </div>
+
+            {/* Variantes/Opciones */}
+            <div className="sm:col-span-2">
+              <div className="flex items-center justify-between mb-2">
+                <label className="label mb-0">Variantes/Opciones</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentOpts = form.options || { default: { types: [] } };
+                    const types = currentOpts.default?.types || [];
+                    const newOpt = { id: `opt_${Date.now()}`, name: 'Nueva variante', extraCost: 0, image: null };
+                    setForm({ ...form, options: { default: { types: [...types, newOpt] } } });
+                  }}
+                  className="text-sm font-medium"
+                  style={{ color: pc }}
+                >
+                  + Agregar variante
+                </button>
+              </div>
+              {form.options?.default?.types?.length > 0 && (
+                <div className="space-y-2">
+                  {form.options.default.types.map((opt, i) => (
+                    <div key={opt.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="flex-1 grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          value={opt.name}
+                          onChange={e => {
+                            const types = [...form.options.default.types];
+                            types[i] = { ...types[i], name: e.target.value };
+                            setForm({ ...form, options: { default: { types } } });
+                          }}
+                          placeholder="Nombre variante"
+                          className="input-field text-xs"
+                        />
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={opt.extraCost || 0}
+                          onChange={e => {
+                            const types = [...form.options.default.types];
+                            types[i] = { ...types[i], extraCost: parseFloat(e.target.value) || 0 };
+                            setForm({ ...form, options: { default: { types } } });
+                          }}
+                          placeholder="Costo extra"
+                          className="input-field text-xs"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const types = form.options.default.types.filter((_, j) => j !== i);
+                          setForm({ ...form, options: types.length > 0 ? { default: { types } } : null });
+                        }}
+                        className="text-red-500 hover:text-red-700 text-xs"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {(!form.options?.default?.types?.length) && (
+                <p className="text-xs text-gray-400">Sin variantes configuradas. Las variantes permiten al cliente elegir entre diferentes opciones del mismo equipo.</p>
+              )}
+            </div>
+
             <div className="sm:col-span-2 flex gap-3">
               <button type="submit" disabled={saving} className="btn-primary" style={{ background: pc }}>{saving ? 'Guardando...' : editing ? 'Actualizar' : 'Crear'}</button>
               <button type="button" onClick={() => { setShowForm(false); setEditing(null); }} className="btn-secondary">Cancelar</button>

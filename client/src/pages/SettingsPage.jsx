@@ -158,6 +158,68 @@ const SettingsPage = () => {
               <Input label="Buffer (minutos)" type="number" min="0" value={config.bufferTime} onChange={e => set('bufferTime', parseInt(e.target.value))} helperText="Entre sesiones" />
             </div>
           </Card>
+
+          <Card title="Bloques de Horario Fijos">
+            <p className="text-sm text-gray-500 mb-4">
+              Si está activado, los clientes solo pueden reservar en los bloques de horario definidos, en vez de elegir hora libremente.
+            </p>
+            <div className="flex items-center gap-3 mb-6">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={config.useTimeBlocks || false}
+                  onChange={e => set('useTimeBlocks', e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
+                <span className="ml-3 text-sm font-medium text-gray-700">Usar bloques de horario fijos</span>
+              </label>
+            </div>
+
+            {config.useTimeBlocks && (
+              <div>
+                <div className="space-y-3 mb-4">
+                  {(config.timeBlocks || []).map((block, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <input
+                        type="time"
+                        value={block.time}
+                        onChange={e => {
+                          const blocks = [...(config.timeBlocks || [])];
+                          blocks[i] = { ...blocks[i], time: e.target.value };
+                          set('timeBlocks', blocks);
+                        }}
+                        className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                      <input
+                        type="text"
+                        value={block.label || ''}
+                        placeholder="Etiqueta (ej: Mañana)"
+                        onChange={e => {
+                          const blocks = [...(config.timeBlocks || [])];
+                          blocks[i] = { ...blocks[i], label: e.target.value };
+                          set('timeBlocks', blocks);
+                        }}
+                        className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                      <button
+                        onClick={() => set('timeBlocks', (config.timeBlocks || []).filter((_, j) => j !== i))}
+                        className="text-red-500 hover:text-red-700 text-sm font-medium px-2"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => set('timeBlocks', [...(config.timeBlocks || []), { time: '09:00', label: 'Nuevo bloque' }])}
+                  className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                >
+                  + Agregar bloque
+                </button>
+              </div>
+            )}
+          </Card>
         </div>
       )}
 

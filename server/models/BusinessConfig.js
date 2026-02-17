@@ -83,6 +83,23 @@ const BusinessConfig = sequelize.define('BusinessConfig', {
     defaultValue: 30, // minutos
     comment: 'Tiempo de preparación entre sesiones en minutos'
   },
+  // Bloques de horario fijo
+  useTimeBlocks: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    comment: 'Si true, usa bloques de horario fijos en vez de horas continuas'
+  },
+  timeBlocks: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    defaultValue: [
+      { time: '10:00', label: 'Mañana (10am)' },
+      { time: '15:00', label: 'Tarde (3pm)' },
+      { time: '17:00', label: 'Tarde-Noche (5pm)' },
+      { time: '19:00', label: 'Noche (7pm)' },
+    ],
+    comment: 'Array de bloques de horario disponibles'
+  },
   // Precios
   hourlyRate: {
     type: DataTypes.DECIMAL(10, 2),

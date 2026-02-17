@@ -15,6 +15,7 @@ const configRoutes = require('./routes/configRoutes');
 const equipmentRoutes = require('./routes/equipmentRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
 
 // Initialize app
 const app = express();
@@ -56,6 +57,7 @@ app.use('/api/config', configRoutes);
 app.use('/api/equipment', equipmentRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/services', serviceRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

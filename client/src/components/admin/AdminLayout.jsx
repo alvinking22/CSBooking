@@ -5,6 +5,7 @@ import { useConfig } from '../../contexts/ConfigContext';
 const NAV = [
   { path: '/admin/dashboard', label: 'Dashboard' },
   { path: '/admin/bookings', label: 'Reservas' },
+  { path: '/admin/services', label: 'Servicios' },
   { path: '/admin/equipment', label: 'Equipos' },
   { path: '/admin/payments', label: 'Pagos' },
   { path: '/admin/settings', label: 'Configuración' },

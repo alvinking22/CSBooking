@@ -75,6 +75,15 @@ export const bookingAPI = {
   getDashboardStats: () => api.get('/bookings/stats/dashboard'),
 };
 
+export const serviceAPI = {
+  getAll: () => api.get('/services'),
+  getById: (id) => api.get(`/services/${id}`),
+  create: (d) => api.post('/services', d),
+  update: (id, d) => api.put(`/services/${id}`, d),
+  delete: (id) => api.delete(`/services/${id}`),
+  reorder: (id, d) => api.put(`/services/${id}/reorder`, d),
+};
+
 export const paymentAPI = {
   getAll: (p) => api.get('/payments', { params: p }),
   getByBooking: (id) => api.get(`/payments/booking/${id}`),

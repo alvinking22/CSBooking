@@ -5,8 +5,20 @@ const Equipment = require('./Equipment');
 const Booking = require('./Booking');
 const BookingEquipment = require('./BookingEquipment');
 const Payment = require('./Payment');
+const ServiceType = require('./ServiceType');
 
 // Definir relaciones
+
+// ServiceType - Booking (One to Many)
+ServiceType.hasMany(Booking, {
+  foreignKey: 'serviceTypeId',
+  as: 'bookings'
+});
+
+Booking.belongsTo(ServiceType, {
+  foreignKey: 'serviceTypeId',
+  as: 'serviceType'
+});
 
 // Booking - Equipment (Many to Many)
 Booking.belongsToMany(Equipment, {
@@ -77,5 +89,6 @@ module.exports = {
   Booking,
   BookingEquipment,
   Payment,
+  ServiceType,
   syncDatabase
 };

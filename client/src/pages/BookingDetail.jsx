@@ -165,7 +165,12 @@ export default function BookingDetail() {
               <Row label="Fecha" value={format(new Date(booking.sessionDate + 'T12:00:00'), "EEEE, d 'de' MMMM yyyy", { locale: es })} />
               <Row label="Horario" value={`${booking.startTime?.slice(0, 5)} - ${booking.endTime?.slice(0, 5)}`} />
               <Row label="Duración" value={`${booking.duration} hora(s)`} />
-              <Row label="Tipo" value={booking.contentType} />
+              {booking.serviceType && (
+                <Row label="Servicio" value={booking.serviceType.name} />
+              )}
+              {!booking.serviceType && booking.contentType && (
+                <Row label="Tipo" value={booking.contentType} />
+              )}
             </div>
           </div>
 
@@ -198,14 +203,30 @@ export default function BookingDetail() {
                 Equipos del Set
               </h3>
               <div className="space-y-2">
-                {booking.equipment.map(eq => (
-                  <div key={eq.id} className="flex justify-between items-center text-sm py-2 border-b border-gray-50 last:border-0">
-                    <span className="text-gray-700">{eq.name}</span>
-                    <span className={eq.isIncluded ? 'text-green-600' : 'text-orange-600'}>
-                      {eq.isIncluded ? 'Incluido' : `+$${eq.extraCost}`}
-                    </span>
-                  </div>
-                ))}
+                {booking.equipment.map(eq => {
+                  const qty = eq.BookingEquipment?.quantity || 1;
+                  const selectedOption = eq.BookingEquipment?.selectedOption;
+                  let optName = null;
+                  if (selectedOption && eq.options) {
+                    const opts = typeof eq.options === 'string' ? JSON.parse(eq.options) : eq.options;
+                    for (const cat of Object.values(opts)) {
+                      if (cat.types) {
+                        const opt = cat.types.find(t => t.id === selectedOption);
+                        if (opt) { optName = opt.name; break; }
+                      }
+                    }
+                  }
+                  return (
+                    <div key={eq.id} className="flex justify-between items-center text-sm py-2 border-b border-gray-50 last:border-0">
+                      <span className="text-gray-700">
+                        {qty > 1 ? `${qty}x ` : ''}{eq.name}{optName ? ` (${optName})` : ''}
+                      </span>
+                      <span className={eq.isIncluded ? 'text-green-600' : 'text-orange-600'}>
+                        {eq.isIncluded ? 'Incluido' : `+$${eq.extraCost}`}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
