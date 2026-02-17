@@ -11,5 +11,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+# Build output
+client/build/
+
 # Temporary files
 ~$*

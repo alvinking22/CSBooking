@@ -1,0 +1,257 @@
+/* ============================================
+   Modern Calendar - Layout principal
+   ============================================ */
+
+.modern-calendar-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .modern-calendar-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.modern-calendar-left {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.modern-calendar-right {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+/* ============================================
+   Información de fecha seleccionada
+   ============================================ */
+
+.modern-calendar-date-info {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modern-calendar-date-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-transform: capitalize;
+  margin: 0 0 0.25rem 0;
+}
+
+.modern-calendar-timezone {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #999;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ============================================
+   Slots de tiempo
+   ============================================ */
+
+.modern-calendar-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.modern-calendar-slot {
+  padding: 1rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  background: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.modern-calendar-slot:hover {
+  border-color: #111;
+  background: #fafafa;
+}
+
+.modern-calendar-slot.selected {
+  background: #111;
+  color: white;
+  border-color: #111;
+}
+
+/* Estado vacío */
+.modern-calendar-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #aaa;
+}
+
+.modern-calendar-empty p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+}
+
+.modern-calendar-empty span {
+  font-size: 0.75rem;
+}
+
+/* ============================================
+   React Day Picker v9 - Override de estilos
+   ============================================ */
+
+/* Contenedor raíz */
+.modern-calendar-left .rdp-root {
+  --rdp-accent-color: #111111;
+  --rdp-accent-background-color: #111111;
+  --rdp-day-height: 3rem;
+  --rdp-day-width: 3rem;
+  --rdp-selected-font: 500 1rem 'Montserrat', sans-serif;
+  --rdp-outside-opacity: 0.3;
+  --rdp-disabled-opacity: 0.25;
+
+  width: 100%;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+}
+
+/* Mes y año (header) */
+.modern-calendar-left .rdp-month_caption {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  padding: 0.5rem 0;
+  text-transform: capitalize;
+}
+
+/* Navegación */
+.modern-calendar-left .rdp-nav {
+  gap: 0.25rem;
+}
+
+.modern-calendar-left .rdp-button_previous,
+.modern-calendar-left .rdp-button_next {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.modern-calendar-left .rdp-button_previous:hover,
+.modern-calendar-left .rdp-button_next:hover {
+  background: #f5f5f5;
+}
+
+.modern-calendar-left .rdp-chevron {
+  fill: #555;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Encabezados de días (L M M J V S D) */
+.modern-calendar-left .rdp-weekday {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  padding-bottom: 0.75rem;
+}
+
+/* Grid del mes */
+.modern-calendar-left .rdp-month_grid {
+  width: 100%;
+  border-spacing: 0.25rem;
+}
+
+/* Celdas de días */
+.modern-calendar-left .rdp-day {
+  width: var(--rdp-day-width);
+  height: var(--rdp-day-height);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #333;
+  border-radius: 50%;
+  transition: all 0.15s ease;
+}
+
+.modern-calendar-left .rdp-day button {
+  border-radius: 50%;
+}
+
+.modern-calendar-left .rdp-day:hover:not(.rdp-disabled):not(.rdp-selected) {
+  background: #f5f5f5;
+}
+
+/* Día seleccionado - Círculo negro */
+.modern-calendar-left .rdp-selected .rdp-day_button,
+.modern-calendar-left .rdp-day.rdp-selected {
+  background: #111111 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  font-weight: 500;
+}
+
+/* Hoy */
+.modern-calendar-left .rdp-today:not(.rdp-selected) {
+  font-weight: 700;
+  color: #111;
+}
+
+/* Días deshabilitados */
+.modern-calendar-left .rdp-disabled {
+  color: #ccc !important;
+  opacity: 0.4;
+}
+
+/* Días fuera del mes */
+.modern-calendar-left .rdp-outside {
+  color: #ddd;
+  opacity: 0.3;
+}
+
+/* Quitar bordes y outlines por defecto */
+.modern-calendar-left .rdp-day_button {
+  border: none !important;
+  outline: none !important;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+}
+
+.modern-calendar-left .rdp-day_button:focus-visible {
+  outline: 2px solid #111 !important;
+  outline-offset: 2px;
+}
+
+/* Semanas */
+.modern-calendar-left .rdp-week {
+  margin-top: 0.125rem;
+}
+
+/* Asegurar que el mes ocupa todo el ancho */
+.modern-calendar-left .rdp-months {
+  width: 100%;
+}
+
+.modern-calendar-left .rdp-month {
+  width: 100%;
+}

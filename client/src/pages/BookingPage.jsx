@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Calendar from 'react-calendar';
 import { format, addDays, isBefore, startOfToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../contexts/ConfigContext';
 import { bookingAPI, equipmentAPI } from '../services/api';
+import ModernCalendar from '../components/booking/ModernCalendar';
 const CATEGORY_LABELS = { cameras: 'Cámaras', microphones: 'Micrófonos', lights: 'Iluminación', backgrounds: 'Fondos', audio: 'Audio', accessories: 'Accesorios', furniture: 'Mobiliario', other: 'Otros' };
 const CONTENT_TYPES = [
-  { value: 'podcast', label: '🎙️ Podcast' },
-  { value: 'youtube', label: '🎬 YouTube' },
-  { value: 'social_media', label: '📱 Redes Sociales' },
-  { value: 'interview', label: '🎤 Entrevista' },
-  { value: 'other', label: '🎯 Otro' },
+  { value: 'podcast', label: 'Podcast' },
+  { value: 'youtube', label: 'YouTube' },
+  { value: 'social_media', label: 'Redes Sociales' },
+  { value: 'interview', label: 'Entrevista' },
+  { value: 'other', label: 'Otro' },
 ];
 
 const STEPS = ['Fecha y Hora', 'Personalizar Set', 'Tus Datos', 'Confirmar'];
@@ -222,93 +222,63 @@ export default function BookingPage() {
 
         {/* Step 1: Date & Time */}
         {step === 1 && (
-          <div className="animate-fade-in grid md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-lg font-semibold mb-4 text-gray-900">📅 Selecciona una Fecha</h2>
-              <Calendar
-                onChange={handleDateChange}
-                value={selectedDate}
-                minDate={addDays(new Date(), 0)}
-                locale="es-ES"
-                className="w-full"
-                tileDisabled={({ date }) => {
-                  if (isBefore(date, startOfToday())) return true;
-                  if (config?.operatingHours) {
-                    const dayName = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][date.getDay()];
-                    return !config.operatingHours[dayName]?.enabled;
-                  }
-                  return false;
-                }}
-              />
-            </div>
+          <div className="animate-fade-in">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900">Selecciona Fecha y Hora</h2>
 
-            <div className="space-y-4">
-              {selectedDate && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-fade-in">
-                  <h2 className="text-lg font-semibold mb-4 text-gray-900">⏰ Hora de Inicio</h2>
-                  <div className="grid grid-cols-3 gap-2">
-                    {availableSlots.length === 0
-                      ? <p className="col-span-3 text-gray-500 text-sm text-center py-4">No hay horario disponible para este día</p>
-                      : availableSlots.map(slot => (
+            <ModernCalendar
+              selectedDate={selectedDate}
+              onDateSelect={handleDateChange}
+              availableSlots={availableSlots}
+              selectedSlot={selectedStart}
+              onSlotSelect={setSelectedStart}
+              config={config}
+            />
+
+            <div className="mt-6 space-y-4">
+              {selectedDate && selectedStart && (
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Duración */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-fade-in">
+                    <h2 className="text-lg font-semibold mb-4 text-gray-900">Duración</h2>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[1, 2, 3, 4, 5, 6, 7, 8].slice(0, config?.maxSessionDuration || 8).map(h => (
                         <button
-                          key={slot.time}
-                          disabled={slot.occupied}
-                          onClick={() => setSelectedStart(slot.time)}
-                          className={`py-2 px-3 rounded-lg text-sm font-medium transition-all
-                            ${slot.occupied ? 'bg-gray-100 text-gray-400 cursor-not-allowed line-through'
-                              : selectedStart === slot.time ? 'text-white shadow-md' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
-                          style={{ background: selectedStart === slot.time && !slot.occupied ? primaryColor : undefined }}
+                          key={h}
+                          onClick={() => setSelectedDuration(h)}
+                          className={`py-2 rounded-lg text-sm font-medium transition-all
+                            ${selectedDuration === h ? 'text-white' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
+                          style={{ background: selectedDuration === h ? primaryColor : undefined }}
                         >
-                          {slot.time}
+                          {h}h
                         </button>
-                      ))
-                    }
-                  </div>
-                </div>
-              )}
-
-              {selectedStart && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-fade-in">
-                  <h2 className="text-lg font-semibold mb-4 text-gray-900">⏱️ Duración</h2>
-                  <div className="grid grid-cols-4 gap-2">
-                    {[1, 2, 3, 4, 5, 6, 7, 8].slice(0, config?.maxSessionDuration || 8).map(h => (
-                      <button
-                        key={h}
-                        onClick={() => setSelectedDuration(h)}
-                        className={`py-2 rounded-lg text-sm font-medium transition-all
-                          ${selectedDuration === h ? 'text-white' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
-                        style={{ background: selectedDuration === h ? primaryColor : undefined }}
-                      >
-                        {h}h
-                      </button>
-                    ))}
-                  </div>
-                  {selectedStart && (
-                    <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-700">
-                        🕐 {selectedStart} → {calculateEndTime(selectedStart, selectedDuration)}
-                        <span className="ml-2 font-semibold">{selectedDuration} hora(s)</span>
-                      </p>
+                      ))}
                     </div>
-                  )}
-                </div>
-              )}
+                    {selectedStart && (
+                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-700">
+                          {selectedStart} → {calculateEndTime(selectedStart, selectedDuration)}
+                          <span className="ml-2 font-semibold">{selectedDuration} hora(s)</span>
+                        </p>
+                      </div>
+                    )}
+                  </div>
 
-              {selectedStart && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-fade-in">
-                  <h2 className="text-lg font-semibold mb-4 text-gray-900">🎯 Tipo de Contenido</h2>
-                  <div className="grid grid-cols-1 gap-2">
-                    {CONTENT_TYPES.map(ct => (
-                      <button
-                        key={ct.value}
-                        onClick={() => setContentType(ct.value)}
-                        className={`py-3 px-4 rounded-lg text-sm font-medium text-left transition-all
-                          ${contentType === ct.value ? 'text-white' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
-                        style={{ background: contentType === ct.value ? primaryColor : undefined }}
-                      >
-                        {ct.label}
-                      </button>
-                    ))}
+                  {/* Tipo de Contenido */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 animate-fade-in">
+                    <h2 className="text-lg font-semibold mb-4 text-gray-900">Tipo de Contenido</h2>
+                    <div className="grid grid-cols-1 gap-2">
+                      {CONTENT_TYPES.map(ct => (
+                        <button
+                          key={ct.value}
+                          onClick={() => setContentType(ct.value)}
+                          className={`py-2.5 px-4 rounded-lg text-sm font-medium transition-all text-left
+                            ${contentType === ct.value ? 'text-white shadow-md' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'}`}
+                          style={{ background: contentType === ct.value ? primaryColor : undefined }}
+                        >
+                          {ct.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -320,7 +290,7 @@ export default function BookingPage() {
         {step === 2 && (
           <div className="animate-fade-in">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">🎬 Personaliza tu Set</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Personaliza tu Set</h2>
               <p className="text-gray-500 mt-1">Selecciona los equipos que necesitas para tu sesión</p>
             </div>
             {Object.keys(groupedEquipment).length === 0
@@ -377,7 +347,7 @@ export default function BookingPage() {
         {step === 3 && (
           <div className="animate-fade-in max-w-2xl mx-auto">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">👤 Tus Datos</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Tus Datos</h2>
               <p className="text-gray-500 mt-1">Necesitamos esta información para confirmar tu reserva</p>
             </div>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
@@ -448,7 +418,7 @@ export default function BookingPage() {
               )}
 
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">👤 Tus Datos</h3>
+                <h3 className="font-semibold text-gray-900 mb-4">Tus Datos</h3>
                 <div className="space-y-3">
                   <Row label="Nombre" value={clientData.name} />
                   <Row label="Email" value={clientData.email} />

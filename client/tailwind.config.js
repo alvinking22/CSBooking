@@ -44,5 +44,11 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: ["light"], // Usando tema claro por defecto
+    base: true,
+    styled: true,
+    utils: true,
+  },
 }
