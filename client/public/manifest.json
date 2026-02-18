@@ -1,0 +1,28 @@
+{
+  "short_name": "CS Booking",
+  "name": "CS Booking - Sistema de Reservas",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#F9FAFB",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "description": "Sistema de reservas para estudio de grabacion"
+}
