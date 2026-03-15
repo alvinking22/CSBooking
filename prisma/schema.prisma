@@ -1,0 +1,296 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PaymentStatus {
+  PENDING
+  DEPOSIT_PAID
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  TRANSFER
+  CARD
+  AZUL
+  OTHER
+}
+
+enum PaymentType {
+  DEPOSIT
+  FULL
+  PARTIAL
+  REFUND
+}
+
+enum PaymentRecordStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum EquipmentCategory {
+  MICROFONOS
+  CAMARAS
+  PERSONAS
+  ILUMINACION
+  FONDOS
+  ACCESORIOS
+  MOBILIARIOS
+  OTROS
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  email     String    @unique @db.VarChar(255)
+  password  String    @db.VarChar(255)
+  firstName String    @db.VarChar(255)
+  lastName  String    @db.VarChar(255)
+  role      Role      @default(ADMIN)
+  isActive  Boolean   @default(true)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  processedPayments Payment[]
+
+  @@map("users")
+}
+
+model BusinessConfig {
+  id                    String   @id @default(uuid()) @db.Uuid
+  businessName          String   @default("CS Booking") @db.VarChar(255)
+  logo                  String?  @db.VarChar(500)
+  primaryColor          String?  @default("#3B82F6") @db.VarChar(20)
+  secondaryColor        String?  @default("#1E40AF") @db.VarChar(20)
+  email                 String?  @db.VarChar(255)
+  phone                 String?  @db.VarChar(50)
+  address               String?
+  instagram             String?  @db.VarChar(255)
+  facebook              String?  @db.VarChar(255)
+  website               String?  @db.VarChar(255)
+  availableHours        Json?
+  bufferTime            Int?     @default(30)
+  hourlyRate            Decimal? @db.Decimal(10, 2)
+  currency              String?  @default("USD") @db.VarChar(3)
+  requireDeposit        Boolean? @default(false)
+  depositType           String?  @default("percentage") @db.VarChar(20)
+  depositAmount         Decimal? @default(50) @db.Decimal(10, 2)
+  sendConfirmationEmail Boolean? @default(true)
+  sendReminderEmail     Boolean? @default(true)
+  reminderHoursBefore   Int?     @default(24)
+  minAdvanceHours       Int?     @default(0)
+  blockedDates          Json?    @default("[]")
+  termsAndConditions    String?
+  cancellationPolicy    String?
+  azulEnabled           Boolean? @default(false)
+  azulMerchantId        String?  @db.VarChar(255)
+  azulAuthKey           String?  @db.VarChar(255)
+  azulMode              String?  @default("sandbox") @db.VarChar(20)
+  setupCompleted        Boolean? @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("business_config")
+}
+
+model ServiceType {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  description String?
+  basePrice   Decimal  @default(0) @db.Decimal(10, 2)
+  duration    Int      @default(1)
+  isActive    Boolean? @default(true)
+  order       Int?     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@index([isActive])
+  @@index([order])
+  @@map("service_types")
+}
+
+model Studio {
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String   @db.VarChar(255)
+  description     String?
+  image           String?  @db.VarChar(500)
+  color           String?  @default("#3B82F6") @db.VarChar(20)
+  isActive        Boolean? @default(true)
+  order           Int?     @default(0)
+  maxParticipants Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@index([isActive])
+  @@index([order])
+  @@map("studios")
+}
+
+model Client {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(255)
+  email        String   @unique @db.VarChar(255)
+  phone        String?  @db.VarChar(50)
+  projectName  String?  @db.VarChar(255)
+  notes        String?
+  bookingCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@index([email])
+  @@map("clients")
+}
+
+model Equipment {
+  id                     String            @id @default(uuid()) @db.Uuid
+  name                   String            @db.VarChar(255)
+  description            String?
+  image                  String?           @db.VarChar(500)
+  category               EquipmentCategory @default(ACCESORIOS)
+  quantity               Int               @default(1)
+  isIncluded             Boolean?          @default(false)
+  extraCost              Decimal           @default(0) @db.Decimal(10, 2)
+  isActive               Boolean?          @default(true)
+  isRequired             Boolean?          @default(false)
+  order                  Int?              @default(0)
+  specifications         Json?
+  allowQuantitySelection Boolean?          @default(false)
+  minQuantity            Int?              @default(1)
+  syncWithParticipants   Boolean?          @default(false)
+  options                Json?
+  studioIds              Json?
+  serviceIds             Json?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+
+  bookings BookingEquipment[]
+
+  @@index([isActive])
+  @@index([category])
+  @@map("equipment")
+}
+
+model Booking {
+  id                 String        @id @default(uuid()) @db.Uuid
+  bookingNumber      String        @unique @db.VarChar(50)
+  clientName         String        @db.VarChar(255)
+  clientEmail        String        @db.VarChar(255)
+  clientPhone        String?       @db.VarChar(50)
+  sessionDate        DateTime      @db.Date
+  startTime          String        @db.VarChar(5)
+  endTime            String        @db.VarChar(5)
+  duration           Decimal       @db.Decimal(4, 2)
+  serviceTypeId      String?       @db.Uuid
+  studioId           String?       @db.Uuid
+  clientId           String?       @db.Uuid
+  projectDescription String?
+  clientNotes        String?
+  adminNotes         String?
+  participants       Int?          @default(1)
+  basePrice          Decimal       @db.Decimal(10, 2)
+  equipmentCost      Decimal       @default(0) @db.Decimal(10, 2)
+  totalPrice         Decimal       @db.Decimal(10, 2)
+  status             BookingStatus @default(PENDING)
+  paymentStatus      PaymentStatus @default(PENDING)
+  paymentMethod      PaymentMethod?
+  depositAmount      Decimal?      @default(0) @db.Decimal(10, 2)
+  paidAmount         Decimal?      @default(0) @db.Decimal(10, 2)
+  remainingAmount    Decimal?      @default(0) @db.Decimal(10, 2)
+  cancelledAt          DateTime?
+  cancellationReason   String?
+  cancelledBy          String?   @db.VarChar(20)
+  confirmationSentAt   DateTime?
+  reminderSentAt       DateTime?
+  termsAcceptedAt      DateTime?
+  rescheduledFrom      Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  serviceType ServiceType?       @relation(fields: [serviceTypeId], references: [id])
+  studio      Studio?            @relation(fields: [studioId], references: [id])
+  client      Client?            @relation(fields: [clientId], references: [id])
+  equipment   BookingEquipment[]
+  payments    Payment[]
+
+  @@index([sessionDate])
+  @@index([studioId])
+  @@index([clientId])
+  @@index([status])
+  @@index([serviceTypeId])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@index([sessionDate, studioId])
+  @@map("bookings")
+}
+
+model BookingEquipment {
+  id             String   @id @default(uuid()) @db.Uuid
+  bookingId      String   @db.Uuid
+  equipmentId    String   @db.Uuid
+  quantity       Int      @default(1)
+  selectedOption String?  @db.VarChar(255)
+  textFieldValue String?
+  cost           Decimal? @default(0) @db.Decimal(10, 2)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  booking   Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@index([bookingId])
+  @@index([equipmentId])
+  @@map("booking_equipment")
+}
+
+model Payment {
+  id              String              @id @default(uuid()) @db.Uuid
+  bookingId       String              @db.Uuid
+  processedById   String?             @db.Uuid
+  amount          Decimal             @db.Decimal(10, 2)
+  paymentType     PaymentType
+  paymentMethod   PaymentMethod
+  status          PaymentRecordStatus @default(PENDING)
+  transactionId   String?             @db.VarChar(255)
+  reference       String?             @db.VarChar(255)
+  notes           String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  booking     Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  processedBy User?   @relation(fields: [processedById], references: [id], onDelete: SetNull)
+
+  @@index([bookingId])
+  @@index([processedById])
+  @@map("payments")
+}

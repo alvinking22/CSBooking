@@ -1,0 +1,480 @@
+/* ============================================
+   Modern Calendar - Main Layout
+   ============================================ */
+
+.mc-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .mc-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Calendar (Left)
+   ============================================ */
+
+.mc-calendar {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+}
+
+/* ============================================
+   Slots Panel (Right)
+   ============================================ */
+
+.mc-panel {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  display: flex;
+  flex-direction: column;
+  min-height: 380px;
+}
+
+.mc-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mc-panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.mc-panel-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* ============================================
+   Slots List
+   ============================================ */
+
+.mc-slots-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 320px;
+  padding-right: 0.25rem;
+}
+
+/* Custom scrollbar */
+.mc-slots-list::-webkit-scrollbar {
+  width: 4px;
+}
+.mc-slots-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mc-slots-list::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 999px;
+}
+.mc-slots-list::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* ============================================
+   Slot Row
+   ============================================ */
+
+.mc-slot {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border: 2px solid #f0f0f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background: white;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.mc-slot:hover:not(.mc-slot-unavailable):not(.mc-slot-selected) {
+  border-color: #333;
+  background: #fafafa;
+}
+
+.mc-slot-selected {
+  color: white !important;
+}
+
+.mc-slot-unavailable {
+  border-color: #f5f5f5;
+  background: #fafafa;
+  cursor: not-allowed;
+}
+
+.mc-slot-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.mc-slot-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mc-slot-time {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: inherit;
+}
+
+.mc-slot-range {
+  font-size: 0.7rem;
+  opacity: 0.55;
+  margin-top: 0.1rem;
+  color: inherit;
+}
+
+.mc-slot-selected .mc-slot-range {
+  opacity: 0.75;
+}
+
+.mc-slot-unavailable .mc-slot-time,
+.mc-slot-unavailable .mc-slot-range {
+  color: #ccc;
+}
+
+.mc-slot-action {
+  font-size: 0.85rem;
+  opacity: 0.35;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: inherit;
+}
+
+.mc-slot-selected .mc-slot-action {
+  opacity: 0.85;
+}
+
+/* ============================================
+   Selection Detail Card (full-width below grid)
+   ============================================ */
+
+.mc-detail {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid;
+  border-radius: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  animation: mc-slideUp 0.2s ease;
+}
+
+@keyframes mc-slideUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mc-detail-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mc-detail-icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.mc-detail-text {
+  min-width: 0;
+}
+
+.mc-detail-main {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.mc-detail-sub {
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin-top: 0.1rem;
+  text-transform: capitalize;
+}
+
+.mc-detail-duration {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+
+.mc-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #bbb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.mc-empty-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+.mc-empty p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+  color: #999;
+}
+
+.mc-empty span {
+  font-size: 0.75rem;
+  color: #bbb;
+}
+
+/* ============================================
+   React Day Picker v9 - Style Overrides
+   ============================================ */
+
+.mc-calendar .rdp-root {
+  --rdp-accent-color: #111111;
+  --rdp-accent-background-color: #111111;
+  --rdp-day_button-border-radius: 50%;
+  --rdp-outside-opacity: 0.3;
+  --rdp-disabled-opacity: 0.25;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.mc-calendar .rdp-months,
+.mc-calendar .rdp-month {
+  width: 100%;
+}
+
+.mc-calendar .rdp-month_caption {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #333;
+  padding: 0.25rem 0 1rem;
+  text-transform: capitalize;
+}
+
+.mc-calendar .rdp-nav {
+  gap: 0.25rem;
+}
+
+.mc-calendar .rdp-button_previous,
+.mc-calendar .rdp-button_next {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.mc-calendar .rdp-button_previous:hover,
+.mc-calendar .rdp-button_next:hover {
+  background: #f5f5f5;
+}
+
+.mc-calendar .rdp-chevron {
+  fill: #555;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.mc-calendar .rdp-weekday {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  padding-bottom: 0.75rem;
+}
+
+.mc-calendar .rdp-month_grid {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0.25rem 0.3rem;
+}
+
+.mc-calendar .rdp-week {
+  height: auto;
+}
+
+.mc-calendar .rdp-day {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #333;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.mc-calendar .rdp-day_button {
+  border: none !important;
+  outline: none !important;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.mc-calendar .rdp-day:hover:not(.rdp-disabled):not(.rdp-selected) .rdp-day_button {
+  background: #f5f5f5;
+}
+
+.mc-calendar .rdp-day_button:focus-visible {
+  outline: 2px solid #111 !important;
+  outline-offset: 2px;
+}
+
+.mc-calendar .rdp-selected .rdp-day_button {
+  background: #111111 !important;
+  color: white !important;
+  font-weight: 500;
+}
+
+.mc-calendar .rdp-today:not(.rdp-selected) .rdp-day_button {
+  font-weight: 700;
+  color: #111;
+}
+
+.mc-calendar .rdp-disabled .rdp-day_button {
+  color: #ccc;
+  cursor: default;
+}
+
+.mc-calendar .rdp-outside .rdp-day_button {
+  color: #ddd;
+  opacity: 0.3;
+}
+
+/* ============================================
+   Mobile (< 768px)
+   ============================================ */
+
+@media (max-width: 768px) {
+  .mc-wrapper {
+    gap: 1rem;
+  }
+
+  .mc-calendar {
+    padding: 1rem 1.25rem;
+  }
+
+  .mc-panel {
+    padding: 1rem;
+    min-height: auto;
+  }
+
+  .mc-slots-list {
+    max-height: none;
+  }
+
+  .mc-calendar .rdp-root {
+    font-size: 0.875rem;
+  }
+
+  .mc-calendar .rdp-day_button {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.875rem;
+  }
+
+  .mc-calendar .rdp-month_caption {
+    font-size: 1rem;
+  }
+
+  .mc-calendar .rdp-weekday {
+    font-size: 0.65rem;
+  }
+
+  .mc-calendar .rdp-month_grid {
+    border-spacing: 0.15rem 0.2rem;
+  }
+}
+
+/* ============================================
+   Small mobile (< 400px)
+   ============================================ */
+
+@media (max-width: 400px) {
+  .mc-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .mc-detail {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .mc-detail-duration {
+    align-self: flex-end;
+  }
+
+  .mc-calendar .rdp-day_button {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 0.8rem;
+  }
+}
